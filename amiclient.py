@@ -60,7 +60,6 @@ def fetch(baseurl, action, actionid=None, **kwargs):
     cj.save(options.cookiefile)
 
     body = response.read()
-    print body
 
     dom = xml.dom.minidom.parseString(body)
 
@@ -86,6 +85,7 @@ from handlers import * # Because you can
 #### Hard event handlers
 
 def handle_event_userevent(action, actionid, actionkwargs, attributes):
+    """ Example return for UserEvent Events """
     prettydebug('Process Userevent Function', 'Would like to call handle_event_userevent_%s and will try to do so' % str(attributes.get('userevent')).lower())
     callable = globals().get('handle_event_userevent_%s' % str(attributes.get('userevent')).lower())
     if callable:
@@ -93,6 +93,17 @@ def handle_event_userevent(action, actionid, actionkwargs, attributes):
     else:
         ## DO SOMETHING PRODUCTIVE
         pass
+
+
+def handle_action_login(action, actionid, actionkwargs, attributes):
+    """ Example return for Login """
+    logging.debug("Login command returned")
+
+def handle_action_corestatus(action, actionid, actionkwargs, attributes):
+    """ Example return for CoreStatus """
+    logging.debug("The CORE IS:")
+    for k, v in sorted(attributes.items()):
+        logging.debug("%s: %s" % (k, v))
 
 #### Process events/actions
 
@@ -111,6 +122,12 @@ def process(action):
         else:
             response = attributes.get('response'), attributes.get('message'), attributes.get('actionid')
 
+            prettydebug('Process Function', 'Would like to call handle_action_%s and will try to do so' % action.lower())
+            callable = globals().get('handle_action_%s' % action.lower())
+            if callable:
+                callable(action, actionid, actionkwargs, attributes)
+
+
     prettydebug('Process Response', response)
     return response
 
@@ -121,6 +138,7 @@ def run(options):
     #### Do something
 
     process(fetch(options.url, 'Login', username=options.username, secret=options.secret))
+    process(fetch(options.url, 'Events', eventmask="on"))
     process(fetch(options.url, 'SIPPeers', username=options.username, secret=options.secret))
     process(fetch(options.url, 'CoreStatus', username=options.username, secret=options.secret))
 
