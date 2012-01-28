@@ -25,7 +25,8 @@ bindaddr=127.0.0.1 ;or 0.0.0.0 or your internal/external IP address
 
 ```
 
-**/etc/asterisk/manager.comf** minimal configuration requirements
+**/etc/asterisk/manager.conf** minimal configuration requirements
+
 ```
 ...
 [general]
@@ -39,6 +40,7 @@ webenabled = yes
 ```
 
 **/etc/asterisk/manager.d/yourusername.conf**
+
 ```
 [yourusername]
 secret=yourubersecretpassword
