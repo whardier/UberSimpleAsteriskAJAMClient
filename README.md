@@ -75,8 +75,13 @@ Sample Uses
 
 Trigger HTTP requests based on events.
 
-Send XMPP based on how a call ends external to Asterisk (for stability)
+Send XMPP based on how a call ends external to Asterisk (for stability reasons).
+
+Transcode recordings external to Asterisk (also for stability reasons).
+
+Open up a call ticket on another platform external to Asterisk (also also for 
+stability reasons).
 
 Send UserEvents from Dialplan to make gears whirr elsewhere.
 
-
+Push events into a database elsewhere.
