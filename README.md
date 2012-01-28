@@ -11,8 +11,8 @@ Configuration
 
 Configuration required Asterisk have HTTP and Manager services enabled and a valid user manager user.
 
-Asterisk
-~~~~~~~~
+### Asterisk
+
 
 ```
 Testing
