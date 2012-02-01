@@ -80,32 +80,32 @@ def prettydebug(prefix, thing):
 
 #### Soft and overridable event handlers
 
-from handlers import * # Because you can
+#from handlers import * # Because you can
 
 #### Hard event handlers
 
-def handle_event_userevent(action, actionid, actionkwargs, attributes):
-    """ Example return for UserEvent Events """
-    prettydebug('Process Userevent Function', 'Would like to call handle_event_userevent_%s and will try to do so' % str(attributes.get('userevent')).lower())
-    callable = globals().get('handle_event_userevent_%s' % str(attributes.get('userevent')).lower())
-    if callable:
-        callable(action, actionid, actionkwargs, attributes)
-    else:
-        ## DO SOMETHING PRODUCTIVE
-        pass
+#def handle_event_userevent(action, actionid, actionkwargs, attributes):
+#    """ Example return for UserEvent Events """
+#    prettydebug('Process Userevent Function', 'Would like to call handle_event_userevent_%s and will try to do so' % str(attributes.get('userevent')).lower())
+#    callable = globals().get('handle_event_userevent_%s' % str(attributes.get('userevent')).lower())
+#    if callable:
+#        callable(action, actionid, actionkwargs, attributes)
+#    else:
+#        ## DO SOMETHING PRODUCTIVE
+#        pass
 
 
-def handle_action_login(action, actionid, actionkwargs, attributes):
-    """ Example return for Login """
-    logging.debug("Login command returned")
+#def handle_action_login(action, actionid, actionkwargs, attributes):
+#    """ Example return for Login """
+#    logging.debug("Login command returned")
 
-def handle_action_corestatus(action, actionid, actionkwargs, attributes):
-    """ Example return for CoreStatus """
-    logging.debug("The CORE IS:")
-    for k, v in sorted(attributes.items()):
-        logging.debug("%s: %s" % (k, v))
+#def handle_action_corestatus(action, actionid, actionkwargs, attributes):
+#    """ Example return for CoreStatus """
+#    logging.debug("The CORE IS:")
+#    for k, v in sorted(attributes.items()):
+#        logging.debug("%s: %s" % (k, v))
 
-#### Process events/actions
+#### Example Process events/actions
 
 def process(action):
     response = None
@@ -130,6 +130,8 @@ def process(action):
 
     prettydebug('Process Response', response)
     return response
+
+#### Example Run
 
 def run(options):
 
