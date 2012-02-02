@@ -174,3 +174,11 @@ if __name__ == "__main__":
         datefmt='%H:%M:%S')
 
     run(options)
+
+def oneup(arg):    
+    return arg + 1
+
+if __name__ == '__channelexec__':
+    for item in channel:
+        channel.send(item)
+        #channel.send(eval(item))
