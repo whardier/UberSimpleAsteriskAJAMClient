@@ -44,11 +44,11 @@ import tempfile
 cj = cookielib.MozillaCookieJar(tempfile.mktemp(), delayload=True)
 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
-def fetch(baseurl, action, actionid=None, **kwargs):
+def fetch(options, baseurl, action, actionid=None, **kwargs):
     url = baseurl + "mxml?"
     kwargs['action'] = action #save time
-    if not actionid:
-        kwargs['actionid'] = str(uuid.uuid5(ID, str(uuid.uuid1())))
+
+    kwargs['actionid'] = str(actionid) or str(uuid.uuid5(ID, str(uuid.uuid1())))
 
     try:
         cj.load(options.cookiefile)
@@ -64,7 +64,9 @@ def fetch(baseurl, action, actionid=None, **kwargs):
     dom = xml.dom.minidom.parseString(body)
 
     responses = dom.getElementsByTagName('generic')
-    actionid = None
+    #actionid = None
+
+    #print dom.toprettyxml()
 
     for response in responses:        
         attributes = dict(response.attributes.items())
@@ -107,23 +109,23 @@ def prettydebug(prefix, thing):
 
 #### Example Process events/actions
 
-def process(action):
+def process(action, globals=None):
     response = None
     for action, actionid, actionkwargs, attributes in action:
         prettydebug('Process Action', action)
         prettydebug('Process ActionID', actionid)
         prettydebug('Process ActionArgs', actionkwargs)
         prettydebug('Process Attributes', attributes)
-        if action == 'WaitEvent' and attributes.get('event'):
+        if attributes.get('event'):
             prettydebug('Process Function', 'Would like to call handle_event_%s and will try to do so' % str(attributes.get('event')).lower())
-            callable = globals().get('handle_event_%s' % str(attributes.get('event')).lower())
+            callable = globals.get('handle_event_%s' % str(attributes.get('event')).lower())
             if callable:
                 callable(action, actionid, actionkwargs, attributes)
         else:
             response = attributes.get('response'), attributes.get('message'), attributes.get('actionid')
 
             prettydebug('Process Function', 'Would like to call handle_action_%s and will try to do so' % action.lower())
-            callable = globals().get('handle_action_%s' % action.lower())
+            callable = globals.get('handle_action_%s' % action.lower())
             if callable:
                 callable(action, actionid, actionkwargs, attributes)
 
@@ -135,17 +137,15 @@ def process(action):
 
 def run(options):
 
-    globals = {}
-
     #### Do something
 
-    process(fetch(options.url, 'Login', username=options.username, secret=options.secret))
-    process(fetch(options.url, 'Events', eventmask="on"))
-    process(fetch(options.url, 'SIPPeers', username=options.username, secret=options.secret))
-    process(fetch(options.url, 'CoreStatus', username=options.username, secret=options.secret))
+    process(fetch(options, options.url, 'Login', username=options.username, secret=options.secret), globals())
+    process(fetch(options, options.url, 'Events', eventmask="on"), globals())
+    process(fetch(options, options.url, 'SIPPeers', username=options.username, secret=options.secret), globals())
+    process(fetch(options, options.url, 'CoreStatus', username=options.username, secret=options.secret), globals())
 
     while True:
-        process(fetch(options.url, 'WaitEvent'))
+        process(fetch(options, options.url, 'WaitEvent'), globals())
 
     #### End of do something
 
